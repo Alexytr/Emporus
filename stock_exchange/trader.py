@@ -21,6 +21,10 @@ class Trader():
         self.quotes = {key: [] for key in symbols}
         self._stop = Event()
 
+    def get_current_info(self):
+        return {"Current Gain": self.current_gain,
+                "Scanned Symbols": self.symbols}
+
     def calc(self, aggregated_quotes):
         if len(aggregated_quotes) >= 2:
             time.sleep(0.5)
@@ -41,6 +45,7 @@ class Trader():
     def stop(self):
         self._stop.set()
 
+
     def _make_a_trade(self, symbol: str, symbol_quotes: List[str]):
         """
         Make a prediction based on the last 10 seconds and buy/sell the stock
@@ -60,6 +65,7 @@ class Trader():
 
         except Exception as e:
             print(f"Got exception while processing quotes for {symbol}: {e}, continuing to the next quotes ..")
+
 
     def handle_quote_from_nasdaq(self, quote: Dict[str, int]):
         """
@@ -104,6 +110,7 @@ class Trader():
             if self._stop.is_set():
                 self._connection = None
                 break
+
 
     def handle_symbol_quote(self, symbol_quote: str):
         """
