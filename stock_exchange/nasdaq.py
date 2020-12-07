@@ -1,6 +1,7 @@
 import random
 import time
 import datetime as dt
+from typing import List
 
 
 class StockExchangeProvider:
@@ -36,7 +37,7 @@ class StockExchangeProvider:
                     sym_appears_prob = random.randint(1, 10)
                     if sym_appears_prob > 6:
                         break
-                    self.callback({time: dt.datetime.now(), 'symbol': sym, 'price': random.randint(1, 100)})
+                    self.callback({"time": dt.datetime.now(), 'symbol': sym, 'price': random.randint(1, 100)})
                     time.sleep(0.10)
                 connect_failure_prob = random.randint(1, 10)
                 if connect_failure_prob > 7:
