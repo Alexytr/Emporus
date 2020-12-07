@@ -10,7 +10,7 @@ def execution_timer(func):
         start = time.perf_counter()
         returned = func(*args, **kwargs)
         end = time.perf_counter()
-        run_time = start - end
+        run_time = end - start
         print(f"Finished {func.__name__} in {run_time:.2f} secs")
         return returned
 

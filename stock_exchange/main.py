@@ -39,5 +39,6 @@ def start_trader():
         exit(0)
 
 
+if __name__ == '__main__':
     start_server()
     start_trader()

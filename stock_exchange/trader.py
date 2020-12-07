@@ -7,6 +7,7 @@ from threading import Event
 
 from stock_exchange.model import Model
 from stock_exchange.nasdaq import StockExchangeProvider
+from stock_exchange.utils import execution_timer
 
 TRADER_USERNAME = 'ploni'
 TRADER_PASSWORD = 'Aa123456'
@@ -23,7 +24,7 @@ class Trader():
 
     def get_current_info(self):
         return {"Current Gain": self.current_gain,
-                "Scanned Symbols": self.symbols}
+                "Monitoring": self.symbols}
 
     def calc(self, aggregated_quotes):
         if len(aggregated_quotes) >= 2:
@@ -45,7 +46,7 @@ class Trader():
     def stop(self):
         self._stop.set()
 
-
+    @execution_timer
     def _make_a_trade(self, symbol: str, symbol_quotes: List[str]):
         """
         Make a prediction based on the last 10 seconds and buy/sell the stock
@@ -65,7 +66,6 @@ class Trader():
 
         except Exception as e:
             print(f"Got exception while processing quotes for {symbol}: {e}, continuing to the next quotes ..")
-
 
     def handle_quote_from_nasdaq(self, quote: Dict[str, int]):
         """
@@ -90,7 +90,6 @@ class Trader():
             open_position.start()
             self.open_positions.append(open_position)
 
-
     def start_data_stream(self):
         """
         The goal here is to keep our connection to the "Nasdaq" alive all the time and make sure there's 0 down time.
@@ -111,7 +110,6 @@ class Trader():
                 self._connection = None
                 break
 
-
     def handle_symbol_quote(self, symbol_quote: str):
         """
         Receive quote from stock exchange, aggregate 10 seconds of quotes from provided symbols.
@@ -122,7 +120,7 @@ class Trader():
        return:
         """
         if symbol_quote in self.symbols:
-            return
+            raise Exception("Already monitored")
         self.symbols.append(symbol_quote)
         self.quotes[symbol_quote] = []
         if self._connection:
